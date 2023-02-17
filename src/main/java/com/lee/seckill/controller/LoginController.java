@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Slf4j
@@ -28,9 +30,10 @@ public class LoginController {
 
     @PostMapping("/doLogin")
     @ResponseBody
-    public RespBean doLogin(@Valid LoginRequest request) {
+    public RespBean doLogin(@Valid LoginRequest request,
+                            HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
         log.info("login request:{}", request);
-        return userService.doLogin(request);
+        return userService.doLogin(request, httpServletRequest, httpServletResponse);
     }
 
 }

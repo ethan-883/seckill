@@ -20,7 +20,7 @@ public interface UserService extends IService<User> {
      * @param loginRequest 入参
      * @return respBean
      */
-    RespBean doLogin(LoginRequest loginRequest);
+    RespBean doLogin(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response);
 
     /**
      * 拿cookie中ticket取得用户

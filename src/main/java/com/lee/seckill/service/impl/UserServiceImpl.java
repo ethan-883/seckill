@@ -1,11 +1,14 @@
 package com.lee.seckill.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lee.seckill.exception.GlobalException;
 import com.lee.seckill.mapper.UserMapper;
 import com.lee.seckill.pojo.User;
 import com.lee.seckill.request.LoginRequest;
 import com.lee.seckill.service.UserService;
+import com.lee.seckill.util.CookieUtil;
 import com.lee.seckill.util.MD5Util;
+import com.lee.seckill.util.UUIDUtil;
 import com.lee.seckill.vo.RespBean;
 import com.lee.seckill.vo.RespBeanEnum;
 import org.springframework.stereotype.Service;
@@ -27,18 +30,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserMapper userMapper;
 
     @Override
-    public RespBean doLogin(LoginRequest loginRequest) {
+    public RespBean doLogin(LoginRequest loginRequest, HttpServletRequest request,
+                            HttpServletResponse response) {
         String mobile = loginRequest.getMobile();
         String password = loginRequest.getPassword();
 
         User user = userMapper.selectById(mobile);
         if (user == null) {
-            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
-        } else if (MD5Util.getMD5(password, user.getSalt()).equals(user.getPassword())){
-            return RespBean.success();
-        } else {
-            return RespBean.error(RespBeanEnum.LOGIN_ERROR);
+            throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
         }
+        if (!MD5Util.getMD5(password, user.getSalt()).equals(user.getPassword())) {
+            throw new GlobalException(RespBeanEnum.LOGIN_ERROR);
+        }
+
+        //cookie
+        String ticket = UUIDUtil.getUUID();
+        request.getSession().setAttribute(ticket, user);
+        CookieUtil.setCookie(request, response, "ticket", ticket);
+        return RespBean.success(ticket);
     }
 
     @Override
