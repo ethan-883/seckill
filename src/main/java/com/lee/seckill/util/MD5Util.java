@@ -31,4 +31,8 @@ public class MD5Util {
         return md5(sb.toString());
     }
 
+    public static void main(String[] args) {
+        System.out.println("DBPassword:" + getDBPassword("390dc0c40bb96cbc2190423e6c1b6263"));
+    }
+
 }

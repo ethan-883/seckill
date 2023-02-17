@@ -26,7 +26,6 @@ public interface UserService extends IService<User> {
      * 拿cookie中ticket取得用户
      * @return 用户
      */
-    User getUserByTicket(String ticket, HttpServletRequest request,
-                         HttpServletResponse response);
+    User getUserByTicket(String ticket);
 
 }
